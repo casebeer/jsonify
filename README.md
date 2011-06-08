@@ -30,12 +30,20 @@ Omit all key arguments or use a dot to print the whole JSON object:
 
 JSON objects must be provided one per line.
 
+If the object provided is a list, each child object will be treated as a separate object:
+
+    $ echo '[{"id":1},{"id":2},{"id":3}]'\
+    	| jsonify -r id
+    1
+    2
+    3
+
 Simple command line streaming Twitter "client:"
 
     $ curl 'http://stream.twitter.com/1/statuses/filter.json?track=ipv6,v6day' \
-		-u $SCREEN_NAME \
-		| jsonify -f --raw user.screen_name text BLANK_LINE \
-		| fold -sw 80
+    	-u $SCREEN_NAME \
+    	| jsonify -f --raw user.screen_name text BLANK_LINE \
+    	| fold -sw 80
 
 In --raw mode, strings are encoded to utf8 before being printed.
 
