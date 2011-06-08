@@ -73,11 +73,26 @@ object.
 
 JSON objects must be one per line."""
 	parser = OptionParser(usage=usage)
-	parser.add_option("-r", "--raw", dest="pretty", action="store_false", default=True, help="print raw values of key, skipping the pretty printer")
+	parser.add_option("-r", "--raw", 
+			dest="pretty", 
+			action="store_false", 
+			default=True, 
+			help="print raw values of key, skipping the pretty printer")
+	parser.add_option("-f", 
+			dest="follow", 
+			action="store_true", 
+			default=False, 
+			help="act like tail -f")
 	options, args = parser.parse_args()
 
+	printer = make_printer([arg.split(".") for arg in args], pretty=options.pretty)
+
 	try: 
-		tail_f(sys.stdin, make_printer([arg.split(".") for arg in args], pretty=options.pretty))
+		if options.follow:
+			tail_f(sys.stdin, printer)
+		else:
+			for line in sys.stdin.readlines():
+				printer(line)
 	except KeyboardInterrupt:
 		return 0
 

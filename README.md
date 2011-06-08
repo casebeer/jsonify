@@ -16,6 +16,12 @@ Missing keys will be printed as blank lines. You can use this to separate JSON o
 
 	$ cat tweets.json | jsonify --raw user.screen_name text BLANK_LINE
 
+Pass the -f flag to make jsonfiy behave like tail -f and continue tailing the end of a file that's being updated:
+
+    $ curl 'http://stream.twitter.com/1/statuses/filter.json?track=ipv6,v6day' \
+		-u $SCREEN_NAME \
+		| jsonify -f --raw user.screen_name text BLANK_LINE 
+
 Omit all key arguments or use a dot to print the whole JSON object:
 
     $ cat tweets.json | jsonify
@@ -28,7 +34,7 @@ Simple command line streaming Twitter "client:"
 
     $ curl 'http://stream.twitter.com/1/statuses/filter.json?track=ipv6,v6day' \
 		-u $SCREEN_NAME \
-		| jsonify --raw user.screen_name text BLANK_LINE \
+		| jsonify -f --raw user.screen_name text BLANK_LINE \
 		| fold -sw 80
 
 In --raw mode, strings are encoded to utf8 before being printed.
