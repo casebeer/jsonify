@@ -22,12 +22,7 @@ def make_printer(keys, pretty=True, do_print=pprint.pprint):
 		def normal_print(s):
 			print unicode(s).encode('utf8')
 		do_print = normal_print
-	def printer(line):
-		try:
-			data = json.loads(line.strip())
-		except Exception,e:
-			print "<UNABLE TO DECODE JSON>"
-			return
+	def printer(data):
 		outputs = []
 		for components in keys:
 			obj = data
@@ -53,7 +48,19 @@ def make_printer(keys, pretty=True, do_print=pprint.pprint):
 					print
 				else:
 					do_print(obj)
-	return printer
+	def parse_and_print(line):
+		try:
+			data = json.loads(line.strip())
+		except Exception,e:
+			print "<UNABLE TO DECODE JSON>"
+			return
+		if type(data) == list:
+			# n.b. type detection since we just decoded JSON
+			for obj in data:
+				printer(obj)
+		else:
+			printer(data)
+	return parse_and_print
 
 def main():	
 	usage = """usage: %prog [options] [keys]
